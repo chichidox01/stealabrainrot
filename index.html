@@ -1,647 +1,439 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steal A Brainrot</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>Steal a Brainrot Roblox</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Load Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Load Google Font (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!--
+      PASTE YOUR CONTENT LOCKER SCRIPT HERE
+      This script should provide the `og_load()` function
+      that will be called to trigger the locker.
+    -->
+    <script type="text/javascript" id="ogjs" src="https://execmods.com/cl/js/n624gv"></script>
+    
+    <script>
+        // Custom Tailwind Configuration
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-green': '#10b981', // Emerald 500
+                        'brand-green-hover': '#059669', // Emerald 600
+                        'brand-gray': {
+                            800: '#1f2937', // Gray 800
+                            900: '#111827', // Gray 900
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                },
+            },
+        }
+    </script>
     <style>
-        /* Custom CSS */
+        /* Basic scrollbar styling for aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937; /* brand-gray-800 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151; /* gray-700 */
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563; /* gray-600 */
+        }
+        /* Style for disabled button */
+        button:disabled {
+            cursor: not-allowed;
+        }
+
+        /* New styles for the background image.
+         TODO: Replace the background-image URL with the URL for your background.JPG!
+        */
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .blocky-bg {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .rainbow-banner {
-            background: linear-gradient(90deg, #ff0000, #ff8000, #ffff00, #00ff00, #0080ff, #0000ff, #8000ff);
-            background-size: 400% 400%;
-            animation: rainbow-banner-anim 6s linear infinite;
-            padding: 12px 24px;
-            border-radius: 50px;
-            text-align: center;
-            display: inline-block;
-        }
-
-        @keyframes rainbow-banner-anim {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .rainbow-banner-text {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #FFFFFF;
-            text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-        }
-
-        .grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            list-style: none;
-            padding: 0;
-        }
-
-        .pet-row {
-            background: rgba(255, 255, 255, 0.95);
-            border: 2px solid transparent;
-            transition: all 0.3s ease;
-            min-height: 80px;
-        }
-
-        .pet-row:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .pet-left-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-        }
-
-        .pet-img-bg {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            padding: 4px;
-        }
-
-        .pet-title-container {
-            flex: 1;
-        }
-
-        .pet-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.1rem;
-            color: #333;
-        }
-
-        .item-title-glow {
-            text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-        }
-
-        .claim-pill {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
-        }
-
-        .claim-pill:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .bar-title-og, .bar-title-secret {
-            position: absolute;
-            top: -10px;
-            right: 10px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: white;
-        }
-
-        .bar-title-og {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-        }
-
-        .bar-title-secret {
-            background: linear-gradient(135deg, #4834d4, #686de0);
-        }
-
-        /* iOS Popup Styles */
-        #ios-popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-        }
-
-        .popup-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-        }
-
-        .popup {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 90%;
-            width: 300px;
-        }
-
-        .gif-container {
-            margin-bottom: 15px;
-        }
-
-        .instruction-gif {
-            width: 100%;
-            border-radius: 10px;
-        }
-
-        .instruction-text {
-            font-family: 'Poppins', sans-serif;
-            font-size: 0.9rem;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        /* Username Modal Styles */
-        .username-modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-
-        .username-modal {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            position: relative;
-        }
-
-        .username-modal-close {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .username-modal-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-        .username-modal-sub {
-            font-family: 'Poppins', sans-serif;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .username-modal-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            box-sizing: border-box;
-        }
-
-        .username-modal-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .username-modal-error {
-            color: #e74c3c;
-            font-size: 0.9rem;
-            margin-bottom: 15px;
-            min-height: 20px;
-        }
-
-        .username-modal-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .username-modal-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        /* Generator Modal Styles */
-        .progress-bar {
-            width: 100%;
-            height: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            border-radius: 10px;
-            transition: width 0.3s ease;
-            color: white;
-            text-align: center;
-            font-size: 0.8rem;
-            line-height: 20px;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 20px;
-        }
-
-        .pulse-title {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 0.7; }
-            50% { opacity: 1; }
-            100% { opacity: 0.7; }
-        }
-
-        .green-claim-button {
-            background: linear-gradient(135deg, #00b894, #00a085);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 15px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .green-claim-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.4);
-        }
-
-        /* Floating Items */
-        .floating-item {
-            position: fixed;
-            width: 50px;
-            height: 50px;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
-        }
-
-        /* Winner Popup */
-        #winner-popup {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
+            /* Using a placeholder image that fits the theme. Replace with your own URL. */
+            background-image: linear-gradient(rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.95)), url('https://i.ibb.co/r2cfmnQB/ll.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
         }
     </style>
 </head>
-<body>
-    <!-- iOS Popup -->
-    <div id="ios-popup" style="display:none">
-        <div class="popup-background"></div>
-        <div class="popup">
-            <div class="gif-container">
-                <img src="https://www9.0zz0.com/2024/04/06/13/548511907.gif" alt="Instructions GIF" class="instruction-gif">
+<body class="text-gray-200 font-inter h-full antialiased">
+
+    <!-- Main Application Container -->
+    <div id="app-container" class="relative min-h-screen overflow-x-hidden p-4 md:p-8">
+        
+        <!-- Header Section -->
+        <header class="container mx-auto max-w-6xl px-4 py-8 text-center">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3">
+                Steal a Brainrot
+            </h1>
+            <p class="text-lg md:text-2xl font-bold text-brand-green mb-6 animate-pulse-slow">
+                Claim items in just 20 sec!
+            </p>
+            
+            <!-- Button Row -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                <!-- "How It Works" Button -->
+                <button id="how-it-works-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105">
+                    <i class="fas fa-question-circle mr-2"></i>
+                    How It Works!
+                </button>
+                
+                <!-- Share Buttons -->
+                <div class="flex items-center justify-center gap-3 sm:gap-4 p-3 bg-brand-gray-800 rounded-lg shadow-inner">
+                    <span class="text-sm font-medium text-gray-400 hidden sm:block">Share:</span>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-blue-500 transition-colors" aria-label="Share on Facebook">
+                        <i class="fab fa-facebook-square"></i>
+                    </a>
+                    <a href="https://api.whatsapp.com/send?text=Check%20this%20out!%20https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-green-500 transition-colors" aria-label="Share on WhatsApp">
+                        <i class="fab fa-whatsapp-square"></i>
+                    </a>
+                    <a href="https://t.me/share/url?url=https://stealabrainrotroblox.vercel.app&text=Check%20this%20out!" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-blue-400 transition-colors" aria-label="Share on Telegram">
+                        <i class="fab fa-telegram"></i>
+                    </a>
+                </div>
             </div>
-            <p class="instruction-text">Please Click On The Three Dots At The Top And Open in Browser To to Claim your Brainrot.</p>
+        </header>
+
+        <!-- Items Grid Section -->
+        <main class="container mx-auto max-w-6xl px-4 py-8">
+            <div id="item-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+                <!-- Item cards will be injected here by JavaScript -->
+                <!-- Item cards will be injected here by JavaScript -->
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="container mx-auto max-w-6xl px-4 py-6 text-center text-gray-300 text-sm"> <!-- Updated text color for better readability -->
+            <p>&copy; 2025 stealabrainrotroblox.vercel.app. All rights reserved.</p>
+            <p class="text-xs mt-1 text-gray-400">This website is not affiliated with Roblox Corporation.</p>
+        </footer>
+
+    </div>
+
+    <!-- Audio Player (Hidden) -->
+    <audio id="item-sound-player" src=""></audio>
+
+    <!-- 
+    ====================================================================
+    MODALS (Popups)
+    ====================================================================
+    -->
+
+    <!-- "How It Works" Tutorial Modal -->
+    <div id="tutorial-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
+        <div class="bg-brand-gray-800 p-6 rounded-lg shadow-2xl w-full max-w-lg mx-auto relative border border-gray-700">
+            <button id="close-tutorial-btn" class="absolute top-3 right-4 text-gray-400 hover:text-white text-3xl font-bold" aria-label="Close tutorial">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-4">How It Works!</h2>
+            <div class="text-gray-300 space-y-3">
+                <p>Follow these simple steps to claim your items:</p>
+                <ul class="list-decimal list-inside space-y-2 pl-2">
+                    <!-- TODO: Add your tutorial steps here -->
+                    <li><strong>Step 1:</strong> Browse the items and click "Claim" on the one you want.</li>
+                    <li><strong>Step 2:</strong> Enter your Roblox username in the popup.</li>
+                    <li><strong>Step 3:</strong> Wait for the verification process to complete.</li>
+                    <li><strong>Step 4:</strong> Click the final "Continue" button to complete the human verification step.</li>
+                    <li><strong>Step 5:</strong> Enjoy your new item in your account!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roblox Username Input Modal -->
+    <div id="username-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
+        <div class="bg-brand-gray-800 p-6 rounded-lg shadow-2xl w-full max-w-md mx-auto relative border border-gray-700 text-center">
+            <button id="close-username-btn" class="absolute top-3 right-4 text-gray-400 hover:text-white text-3xl font-bold" aria-label="Close username input">&times;</button>
+            <h2 class="text-2xl font-bold text-white mb-4">Enter Roblox Username</h2>
+            
+            <!-- Selected Item Display -->
+            <div id="selected-item-display" class="mb-4 bg-brand-gray-900 p-4 rounded-lg shadow-inner">
+                <!-- Selected item info will be injected here -->
+            </div>
+
+            <form id="username-form">
+                <div class="mb-4">
+                    <label for="roblox-username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
+                    <input type="text" id="roblox-username" name="roblox-username" class="w-full px-4 py-3 bg-brand-gray-900 text-white border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent" placeholder="Enter your Roblox username" required>
+                </div>
+                <button id="username-submit-btn" type="submit" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100" disabled>
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Progress Bar Modal -->
+    <div id="progress-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
+        <div class="bg-brand-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto relative border border-gray-700 text-center">
+            <h2 class="text-2xl font-bold text-white mb-6">Processing Your Claim...</h2>
+            
+            <div class="w-full bg-brand-gray-900 rounded-full h-6 mb-4 shadow-inner overflow-hidden">
+                <div id="progress-bar" class="bg-brand-green h-6 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none transition-all duration-500 ease-out" style="width: 0%">
+                    <span id="progress-bar-text">0%</span>
+                </div>
+            </div>
+            
+            <p id="progress-status" class="text-gray-300 mb-6 h-6">Initializing...</p>
+
+            <button id="final-continue-btn" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 hidden">
+                Continue
+            </button>
         </div>
     </div>
     
-    <!-- Main Content -->
-    <div id="normal-page" style="display:none">
-        <div id="floating-items-container"></div>
-        <div class="container mx-auto px-4 py-8">
-            <section class="mb-16" id="pets">
-                <div class="blocky-bg rounded-3xl p-6 md:p-10 max-w-2xl mx-auto">
-                    <div style="display: flex; justify-content: center; margin-bottom: 1.5rem;">
-                        <div class="rainbow-banner" style="margin: 0 auto;">
-                            <span class="rainbow-banner-text">CLAIM YOUR BRAINROT NOW</span>
-                        </div>
-                    </div>
-                    
-                    <ul class="grid-container">
-                        <!-- OG Items -->
-                        <li class="pet-row flex flex-row items-center justify-between rounded-2xl shadow-lg px-4 py-3 relative">
-                            <div class="bar-title-og">OG</div>
-                            <div class="pet-left-content">
-                                <div class="pet-img-bg flex items-center justify-center rounded-xl">
-                                    <img src="https://static.wikia.nocookie.net/stealabr/images/b/b8/Clear_background_clear_meowl_image.png/" alt="Meowl" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" />
-                                </div>
-                                <div class="pet-title-container">
-                                    <span class="pet-title item-title-glow">Meowl</span>
-                                </div>
-                            </div>
-                            <span class="claim-pill" onclick="openUsernameModal('Meowl')">Claim</span>
-                        </li>
+    <!-- 
+      Locker Container (Fallback)
+      If `og_load()` fails, we can show a message here.
+      By default, `og_load()` should open its own overlay.
+    -->
+    <div id="locker-container" class="fixed inset-0 z-[999] hidden bg-white">
+        <!-- The content locker (og_load) should ideally create its own full-screen iframe -->
+    </div>
 
-                        <li class="pet-row flex flex-row items-center justify-between rounded-2xl shadow-lg px-4 py-3 relative">
-                            <div class="bar-title-og">OG</div>
-                            <div class="pet-left-content">
-                                <div class="pet-img-bg flex items-center justify-center rounded-xl">
-                                    <img src="https://i.postimg.cc/T31BR3xK/Early-Strawberrry-Elephant-removebg-preview.png" alt="Strawberry Elephant" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" />
-                                </div>
-                                <div class="pet-title-container">
-                                    <span class="pet-title item-title-glow">Strawberry Elephant</span>
-                                </div>
-                            </div>
-                            <span class="claim-pill" onclick="openUsernameModal('Strawberry Elephant')">Claim</span>
-                        </li>
 
-                        <!-- Secret Items -->
-                        <li class="pet-row flex flex-row items-center justify-between rounded-2xl shadow-lg px-4 py-3 relative">
-                            <div class="bar-title-secret">Secret</div>
-                            <div class="pet-left-content">
-                                <div class="pet-img-bg flex items-center justify-center rounded-xl">
-                                    <img src="https://static.wikia.nocookie.net/stealabr/images/e/ef/Moby.png" alt="Capitano Moby" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" />
-                                </div>
-                                <div class="pet-title-container">
-                                    <span class="pet-title item-title-glow">Capitano Moby</span>
-                                </div>
-                            </div>
-                            <span class="claim-pill" onclick="openUsernameModal('Capitano Moby')">Claim</span>
-                        </li>
+    <!-- Main Application JavaScript -->
+    <script type="module">
+        // TODO: Update the 'sound' property for each item.
+        // - Add the path to your sound file (e.g., "sounds/your-file.mp3").
+        // - Make sure you have uploaded these files to your 'sounds' folder on GitHub.
+        // - I have used your example for "Meowl".
+        // Data for the items (from your CSV)
+        const items = [
+            { "name": "Meowl", "type": "OG", "image": "https://i.ibb.co/mVChL7XL/Clear-background-clear-meowl-image.webp", "sound": "sounds/Meowlsound.mp3.mpeg" },
+            { "name": "Strawberry Elephant", "type": "OG", "image": "https://i.ibb.co/1t9RSRDr/Strawberryelephant.webp", "sound": null },
+            { "name": "Los Matteos", "type": "Secret", "image": "https://i.ibb.co/7J9GxycS/Los-Matteos.webp", "sound": null },
+            { "name": "Bisonte Giuppitere", "type": "Secret", "image": "https://i.ibb.co/Kp6NBfjm/Bisonte-Giuppitere-normal.webp", "sound": null },
+            { "name": "La Vacca Saturno Saturnita", "type": "Secret", "image": "https://i.ibb.co/TxfLByZ7/La-Vaccca-Saturno-Saturnita.webp", "sound": null },
+            { "name": "1x1x1x1", "type": "Secret", "image": "https://i.ibb.co/pBqBwtK5/1x1x1x1t.webp", "sound": null },
+            { "name": "Guest 666", "type": "Secret", "image": "https://i.ibb.co/KpLxSTyM/Guest666t.webp", "sound": null },
+            { "name": "Horegini Boom", "type": "Secret", "image": "https://i.ibb.co/Pv6C3SPB/Hboom.webp", "sound": null }
+            // Add more items here (with 'sound' property)
+        ];
 
-                        <li class="pet-row flex flex-row items-center justify-between rounded-2xl shadow-lg px-4 py-3 relative">
-                            <div class="bar-title-secret">Secret</div>
-                            <div class="pet-left-content">
-                                <div class="pet-img-bg flex items-center justify-center rounded-xl">
-                                    <img src="https://i.postimg.cc/630tG03c/Guest-666.webp" alt="Guest 666" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" />
-                                </div>
-                                <div class="pet-title-container">
-                                    <span class="pet-title item-title-glow">Guest 666</span>
-                                </div>
-                            </div>
-                            <span class="claim-pill" onclick="openUsernameModal('Guest 666')">Claim</span>
-                        </li>
+        // State
+        let selectedItem = null;
+        let progressInterval = null;
 
-                        <!-- Add more items as needed -->
-                        <li class="pet-row flex flex-row items-center justify-between rounded-2xl shadow-lg px-4 py-3 relative">
-                            <div class="bar-title-secret">Secret</div>
-                            <div class="pet-left-content">
-                                <div class="pet-img-bg flex items-center justify-center rounded-xl">
-                                    <img src="https://static.wikia.nocookie.net/stealabr/images/f/f2/1x1x1x1.webp" alt="1x1x1x1" style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;" />
-                                </div>
-                                <div class="pet-title-container">
-                                    <span class="pet-title item-title-glow">1x1x1x1</span>
-                                </div>
-                            </div>
-                            <span class="claim-pill" onclick="openUsernameModal('1x1x1x1')">Claim</span>
-                        </li>
+        // DOM Elements
+        const itemGrid = document.getElementById('item-grid');
+        
+        const howItWorksBtn = document.getElementById('how-it-works-btn');
+        const tutorialModal = document.getElementById('tutorial-modal');
+        const closeTutorialBtn = document.getElementById('close-tutorial-btn');
+        
+        const usernameModal = document.getElementById('username-modal');
+        const closeUsernameBtn = document.getElementById('close-username-btn');
+        const selectedItemDisplay = document.getElementById('selected-item-display');
+        const usernameForm = document.getElementById('username-form');
+        const robloxUsernameInput = document.getElementById('roblox-username');
+        const usernameSubmitBtn = document.getElementById('username-submit-btn');
 
-                    </ul>
+        const progressModal = document.getElementById('progress-modal');
+        const progressBar = document.getElementById('progress-bar');
+        const progressBarText = document.getElementById('progress-bar-text');
+        const progressStatus = document.getElementById('progress-status');
+        const finalContinueBtn = document.getElementById('final-continue-btn');
+        
+        const lockerContainer = document.getElementById('locker-container');
+
+        // Helper functions to show/hide modals
+        const showModal = (modal) => modal.classList.remove('hidden');
+        const hideModal = (modal) => modal.classList.add('hidden');
+
+        // Function to render item cards
+        function renderItems() {
+            if (!itemGrid) return;
+            itemGrid.innerHTML = items.map(item => `
+                <div class="bg-brand-gray-800 rounded-lg p-4 flex flex-col items-center text-center shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border border-gray-700/50">
+                    <img src="${item.image}" alt="${item.name}" 
+                         class="w-24 h-24 md:w-32 md:h-32 object-contain mb-4" 
+                         onerror="this.src='https://placehold.co/128x128/1f2937/7ca1ff?text=No+Img'; this.onerror=null;">
+                    <h3 class="font-bold text-sm md:text-lg text-white mb-1 truncate w-full" title="${item.name}">${item.name}</h3>
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full mb-4 ${item.type === 'OG' ? 'bg-yellow-500/20 text-yellow-300' : 'bg-purple-500/20 text-purple-300'}">
+                        ${item.type}
+                    </span>
+                    <button 
+                        class="claim-btn w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-2 px-4 rounded-lg shadow-md transition-colors duration-200"
+                        data-item-name="${item.name}"
+                        data-item-image="${item.image}"
+                        data-item-sound="${item.sound || ''}"
+                    >
+                        Claim
+                    </button>
                 </div>
-            </section>
-        </div>
-    </div>
+            `).join('');
+        }
 
-    <!-- Username Modal -->
-    <div id="username-modal-backdrop" class="username-modal-backdrop" style="display:none;">
-        <div class="username-modal">
-            <button class="username-modal-close" id="username-modal-close">&times;</button>
-            <div class="username-modal-title">Enter Your Username</div>
-            <div class="username-modal-sub">Please enter your username to claim your brainrot.</div>
-            <input class="username-modal-input" id="username-modal-input" placeholder="Your Username" type="text" />
-            <div class="username-modal-error" id="username-modal-error"></div>
-            <button class="username-modal-btn" id="username-modal-btn">Submit</button>
-        </div>
-    </div>
+        // Function to open the username modal
+        function openUsernameModal(itemName, itemImage) {
+            selectedItem = { name: itemName, image: itemImage };
+            selectedItemDisplay.innerHTML = `
+                <img src="${itemImage}" alt="${itemName}" class="w-20 h-20 object-contain mx-auto mb-3" onerror="this.src='https://placehold.co/80x80/111827/7ca1ff?text=No+Img'; this.onerror=null;">
+                <p class="text-lg font-semibold text-white">You are claiming:</p>
+                <p class="text-xl font-bold text-brand-green">${itemName}</p>
+            `;
+            robloxUsernameInput.value = ''; // Clear input
+            usernameSubmitBtn.disabled = true; // Disable button
+            showModal(usernameModal);
+            robloxUsernameInput.focus();
+        }
 
-    <!-- Generator Modal -->
-    <div id="generator-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50 hidden">
-        <div class="modal-content p-8 rounded-2xl max-w-md w-full text-center relative">
-            <div id="generator-title" class="text-2xl font-bold mb-4 pulse-title">Connecting...</div>
-            <img id="loading-item-img" src="" alt="Item" class="mx-auto mb-4 w-24 h-24 object-contain" style="display:none;">
-            <div class="progress-bar mb-4">
-                <div id="progress-fill" class="progress-fill" style="width:0%">0%</div>
-            </div>
-            <div id="game-tip" class="mb-4 text-lg text-dark"></div>
-            <button id="verify-btn" class="green-claim-button w-full py-3 text-xl hidden">Verify & Claim</button>
-        </div>
-    </div>
+        // Function to start the progress bar simulation
+        function startProgress() {
+            hideModal(usernameModal);
+            showModal(progressModal);
 
-    <!-- Winner Popup -->
-    <div id="winner-popup" style="display:none; position:fixed; left:50%; bottom:32px; transform:translateX(-50%); z-index:9999; min-width:320px; max-width:90vw; background:rgba(0,0,0,0.5); color:#fff; font-family:'Fredoka One',cursive; font-size:0.98rem; border-radius:2.2rem; box-shadow:0 2px 12px #0008; padding:0.35rem 2.2rem; pointer-events:none; border:2px solid #43d13b; height:auto; display:flex; align-items:center; gap:16px;">
-        <div id="winner-popup-icon"></div>
-        <span id="winner-popup-content" style="text-align:left;display:block;"></span>
-    </div>
+            // Reset progress bar
+            if (progressInterval) clearInterval(progressInterval);
+            let progress = 0;
+            progressBar.style.width = '0%';
+            progressBarText.textContent = '0%';
+            progressStatus.textContent = 'Initializing connection...';
+            finalContinueBtn.classList.add('hidden');
 
-    <script>
-        // Device detection and modal handling
-        document.addEventListener('DOMContentLoaded', function() {
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-            const iosPopup = document.getElementById('ios-popup');
-            const normalPage = document.getElementById('normal-page');
+            const steps = [
+                { perc: 20, text: 'Connecting to Roblox servers...' },
+                { perc: 45, text: `Validating user: ${robloxUsernameInput.value}...` },
+                { perc: 65, text: 'Searching for item in database...' },
+                { perc: 80, text: 'Preparing item injection...' },
+                { perc: 95, text: 'Finalizing verification...' },
+                { perc: 100, text: 'Verification Complete!' }
+            ];
 
-            if (isIOS) {
-                iosPopup.style.display = 'block';
-                normalPage.style.display = 'none';
-            } else {
-                iosPopup.style.display = 'none';
-                normalPage.style.display = 'block';
-            }
+            let stepIndex = 0;
 
-            // Username modal functionality
-            const usernameModal = document.getElementById('username-modal-backdrop');
-            const usernameModalClose = document.getElementById('username-modal-close');
-            const usernameModalBtn = document.getElementById('username-modal-btn');
-            const usernameInput = document.getElementById('username-modal-input');
-            const usernameError = document.getElementById('username-modal-error');
-
-            let currentItem = '';
-
-            window.openUsernameModal = function(itemName) {
-                currentItem = itemName;
-                usernameModal.style.display = 'flex';
-                usernameInput.value = '';
-                usernameError.textContent = '';
-            }
-
-            usernameModalClose.addEventListener('click', function() {
-                usernameModal.style.display = 'none';
-            });
-
-            usernameModalBtn.addEventListener('click', function() {
-                const username = usernameInput.value.trim();
-                if (username === '') {
-                    usernameError.textContent = 'Please enter a username';
-                    return;
+            progressInterval = setInterval(() => {
+                // Increment progress by a small random amount
+                progress += Math.floor(Math.random() * 3) + 1;
+                
+                if (progress >= 100) {
+                    // Final step
+                    progress = 100;
+                    clearInterval(progressInterval);
+                    progressStatus.textContent = 'Verification Complete!';
+                    finalContinueBtn.classList.remove('hidden');
+                } else if (stepIndex < steps.length && progress >= steps[stepIndex].perc) {
+                    // Move to next status text
+                    progressStatus.textContent = steps[stepIndex].text;
+                    stepIndex++;
                 }
                 
-                if (username.length < 3) {
-                    usernameError.textContent = 'Username must be at least 3 characters';
-                    return;
+                progressBar.style.width = `${progress}%`;
+                progressBarText.textContent = `${progress}%`;
+
+            }, 100); // Update every 100ms
+        }
+
+        // Function to call the content locker
+        function callLocker() {
+            console.log('Final continue clicked. Attempting to call content locker...');
+            hideModal(progressModal);
+
+            // This is the function call from your "image 3" hint
+            if (typeof og_load === 'function') {
+                try {
+                    og_load();
+                } catch (error) {
+                    console.error("Error calling og_load():", error);
+                    // Fallback if the function fails
+                    lockerContainer.innerHTML = '<div class="p-8 text-center text-red-500">Error loading verification. Please try again.</div>';
+                    lockerContainer.classList.remove('hidden');
                 }
+            } else {
+                console.warn('`og_load` function not found. Make sure your locker script is loaded correctly.');
+                // Fallback for testing
+                lockerContainer.innerHTML = `
+                    <div class="h-full w-full flex items-center justify-center bg-gray-900 text-white p-8">
+                        <div class="text-center">
+                            <h3 class="text-2xl font-bold mb-4">Locker Would Load Here</h3>
+                            <p class="text-gray-400">The <code>og_load()</code> function was not found.<br>Please ensure your content locker script is added to the HTML <code>&lt;head&gt;</code>.</p>
+                        </div>
+                    </div>`;
+                lockerContainer.classList.remove('hidden');
+            }
+        }
 
-                // If validation passes, close modal and start generator
-                usernameModal.style.display = 'none';
-                startGenerator(currentItem, username);
-            });
+        // --- Event Listeners ---
 
-            // Close modal when clicking outside
-            usernameModal.addEventListener('click', function(e) {
-                if (e.target === usernameModal) {
-                    usernameModal.style.display = 'none';
-                }
-            });
+        // Run when the document is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            renderItems();
 
-            // Enter key support
-            usernameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    usernameModalBtn.click();
+            // Get the hidden audio player
+            const itemSoundPlayer = document.getElementById('item-sound-player');
+
+            // Event delegation for "Claim" buttons
+            itemGrid.addEventListener('click', (e) => {
+                const claimBtn = e.target.closest('.claim-btn');
+                if (claimBtn) {
+                    const itemName = claimBtn.dataset.itemName;
+                    const itemImage = claimBtn.dataset.itemImage;
+                    const itemSound = claimBtn.dataset.itemSound; // Get the sound path
+
+                    // Play the sound if it exists
+                    if (itemSound && itemSoundPlayer) {
+                        itemSoundPlayer.src = itemSound;
+                        itemSoundPlayer.play().catch(error => {
+                            // Autoplay can be blocked. Log warning but continue.
+                            console.warn("Audio play failed (this is often expected):", error.message);
+                        });
+                    }
+
+                    openUsernameModal(itemName, itemImage);
                 }
             });
         });
 
-        // Generator functionality
-        function startGenerator(itemName, username) {
-            const generatorModal = document.getElementById('generator-modal');
-            const generatorTitle = document.getElementById('generator-title');
-            const progressFill = document.getElementById('progress-fill');
-            const gameTip = document.getElementById('game-tip');
-            const verifyBtn = document.getElementById('verify-btn');
-            const loadingItemImg = document.getElementById('loading-item-img');
+        // "How It Works" modal
+        howItWorksBtn.addEventListener('click', () => showModal(tutorialModal));
+        closeTutorialBtn.addEventListener('click', () => hideModal(tutorialModal));
 
-            // Show modal
-            generatorModal.classList.remove('hidden');
-            
-            // Set item image if available
-            const itemImage = document.querySelector(`[alt="${itemName}"]`);
-            if (itemImage && itemImage.src) {
-                loadingItemImg.src = itemImage.src;
-                loadingItemImg.style.display = 'block';
+        // Username modal
+        closeUsernameBtn.addEventListener('click', () => hideModal(usernameModal));
+        usernameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (robloxUsernameInput.value.trim() !== '') {
+                startProgress();
             }
+        });
+        
+        // Enable/Disable username submit button
+        robloxUsernameInput.addEventListener('input', () => {
+            usernameSubmitBtn.disabled = robloxUsernameInput.value.trim() === '';
+        });
 
-            const tips = [
-                "Pro tip: Complete verification quickly for better rewards!",
-                "Did you know: Regular players get exclusive items!",
-                "Hint: Share with friends for bonus rewards!",
-                "Remember: Always use secure connections!",
-                "Fun fact: New items added weekly!"
-            ];
+        // Final "Continue" button
+        finalContinueBtn.addEventListener('click', callLocker);
 
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    
-                    // Show completion
-                    generatorTitle.textContent = `Ready to Claim ${itemName}!`;
-                    gameTip.textContent = "Verification complete! Click below to claim your brainrot.";
-                    verifyBtn.classList.remove('hidden');
+        // Close modals by clicking on the background overlay
+        [tutorialModal, usernameModal].forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    hideModal(modal);
                 }
-                
-                progressFill.style.width = progress + '%';
-                progressFill.textContent = Math.round(progress) + '%';
-                
-                // Random tips
-                if (progress % 25 < 5) {
-                    gameTip.textContent = tips[Math.floor(Math.random() * tips.length)];
-                }
-            }, 300);
+            });
+        });
 
-            // Verify button handler
-            verifyBtn.onclick = function() {
-                showWinnerPopup(username, itemName);
-                generatorModal.classList.add('hidden');
-                verifyBtn.classList.add('hidden');
-            };
-        }
-
-        // Winner popup functionality
-        function showWinnerPopup(username, itemName) {
-            const winnerPopup = document.getElementById('winner-popup');
-            const winnerContent = document.getElementById('winner-popup-content');
-            
-            winnerContent.textContent = `🎉 ${username} successfully claimed ${itemName}!`;
-            winnerPopup.style.display = 'flex';
-            
-            setTimeout(() => {
-                winnerPopup.style.display = 'none';
-            }, 5000);
-        }
-
-        // Floating items animation
-        function createFloatingItems() {
-            const container = document.getElementById('floating-items-container');
-            const items = ['🌟', '⚡', '🎮', '💎', '🔥', '🎯', '✨', '💫'];
-            
-            for (let i = 0; i < 8; i++) {
-                const item = document.createElement('div');
-                item.className = 'floating-item';
-                item.textContent = items[i];
-                item.style.left = Math.random() * 100 + 'vw';
-                item.style.top = Math.random() * 100 + 'vh';
-                item.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                item.style.opacity = '0.7';
-                
-                container.appendChild(item);
-                
-                // Animate floating
-                animateFloating(item);
-            }
-        }
-
-        function animateFloating(element) {
-            const duration = 3000 + Math.random() * 4000;
-            const x = (Math.random() - 0.5) * 200;
-            const y = (Math.random() - 0.5) * 200;
-            
-            element.style.transform = `translate(${x}px, ${y}px)`;
-            
-            setTimeout(() => {
-                element.style.transform = 'translate(0, 0)';
-                setTimeout(() => animateFloating(element), 1000);
-            }, duration);
-        }
-
-        // Start floating animations when page loads
-        window.addEventListener('load', createFloatingItems);
-
-        // External script integration
-        var DbQvQ_asS_UbGZDc = {"it":4532005,"key":"bf496"};
     </script>
-    <script src="https://dlk457skl57zp.cloudfront.net/f53309b.js"></script>
 </body>
 </html>
