@@ -30,6 +30,7 @@
                 extend: {
                     fontFamily: {
                         'inter': ['Inter', 'sans-serif'],
+                        'mono': ['"Courier New"', 'Courier', 'monospace'], // Add monospace font for terminal
                     },
                     colors: {
                         'brand-green-custom': '#24c131', /* Your custom green */
@@ -44,6 +45,10 @@
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'ping-slow': 'ping 2s cubic-bezier(0.4, 0, 0.6, 1) infinite', // For live dot
+                    },
+                    boxShadow: {
+                        'glow-green': '0 0 15px 5px rgba(16, 185, 129, 0.3)', // Green glow
                     }
                 },
             },
@@ -120,6 +125,52 @@
             position: relative;
             z-index: 10;
         }
+        
+        /* Soundboard button styling */
+        .soundboard-btn {
+            background-color: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(0, 0, 0, 0.4);
+            transition: all 0.2s ease-in-out;
+        }
+        .soundboard-btn:hover {
+            background-color: rgba(0, 0, 0, 0.4);
+            transform: scale(1.05);
+        }
+        .soundboard-btn:active {
+            transform: scale(0.95);
+        }
+        
+        /* NEW: Hacker Terminal Styles */
+        #hacker-terminal {
+            background-color: #0a0a0a; /* Near black */
+            border: 1px solid #374151; /* gray-700 */
+            border-radius: 8px;
+            height: 160px; /* Fixed height to show scrolling */
+            overflow-y: auto; /* Enable scrolling */
+            padding: 12px;
+            font-family: theme('fontFamily.mono');
+            font-size: 0.875rem; /* 14px */
+            color: #10b981; /* brand-green */
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+            /* Smooth scrolling */
+            scroll-behavior: smooth;
+        }
+        #hacker-terminal p {
+            margin: 0;
+            line-height: 1.6;
+            white-space: pre-wrap; /* Wrap text */
+        }
+        /* Custom scrollbar for terminal */
+        #hacker-terminal::-webkit-scrollbar {
+            width: 5px;
+        }
+        #hacker-terminal::-webkit-scrollbar-track {
+            background: #111827; /* brand-gray-900 */
+        }
+        #hacker-terminal::-webkit-scrollbar-thumb {
+            background: #10b981; /* brand-green */
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body class="text-gray-200 font-inter antialiased flex flex-col min-h-screen">
@@ -128,14 +179,14 @@
     <div id="green-header-container" class="w-full flex-shrink-0 grid-pattern-overlay">
         <header class="container mx-auto max-w-6xl px-4 py-8 text-center text-white content-above-pattern">
             <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3">
-                Steal a Brainrot
+                Steal A Brainrot
             </h1>
             <p class="text-lg md:text-2xl font-bold mb-6 animate-pulse-slow">
                 Claim items in just 20 sec!
             </p>
             
             <!-- Button Row -->
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
                 <!-- "How It Works" Button -->
                 <button id="how-it-works-btn" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105">
                     <i class="fas fa-question-circle mr-2"></i>
@@ -156,6 +207,15 @@
                     </a>
                 </div>
             </div>
+            
+            <!-- Brainrot Soundboard -->
+            <div id="brainrot-soundboard" class="mt-4 p-4 bg-black bg-opacity-20 rounded-lg shadow-inner">
+                <h3 class="text-lg font-bold mb-4 text-white text-opacity-90">Brainrot Soundboard</h3>
+                <div id="soundboard-grid" class="grid grid-cols-4 sm:grid-cols-8 gap-2 sm:gap-3">
+                    <!-- Soundboard buttons will be injected here by JavaScript -->
+                </div>
+            </div>
+
         </header>
     </div>
 
@@ -172,8 +232,11 @@
         <p class="text-xs mt-1 text-gray-400">This website is not affiliated with Roblox Corporation.</p>
     </footer>
 
-    <!-- Audio Player (Hidden) -->
-    <audio id="item-sound-player" src=""></audio>
+    <!-- Audio Preload Container (Hidden) -->
+    <div id="audio-preloader" class="hidden">
+        <!-- Preloaded audio elements will be injected here -->
+    </div>
+
 
     <!-- 
     ====================================================================
@@ -200,45 +263,72 @@
         </div>
     </div>
 
-    <!-- Roblox Username Input Modal -->
-    <div id="username-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
-        <div class="bg-brand-gray-800 p-6 rounded-lg shadow-2xl w-full max-w-md mx-auto relative border border-gray-700 text-center">
-            <button id="close-username-btn" class="absolute top-3 right-4 text-gray-400 hover:text-white text-3xl font-bold" aria-label="Close username input">&times;</button>
-            <h2 class="text-2xl font-bold text-white mb-4">Enter Roblox Username</h2>
+    <!-- 
+    ====================================================================
+    NEW ADVANCED CLAIM TERMINAL MODAL (Redesigned)
+    ====================================================================
+    -->
+    <div id="claim-terminal-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
+        <!-- 
+          Changed max-width from max-w-3xl to max-w-md (matching screenshot)
+          and removed grid layout for a single-column layout
+        -->
+        <div class="bg-brand-gray-800 p-6 sm:p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto relative border border-gray-700 transition-all duration-300">
+            <!-- Close Button -->
+            <button id="close-claim-btn" class="absolute top-3 right-4 text-gray-400 hover:text-white text-3xl font-bold z-20" aria-label="Close claim terminal">&times;</button>
             
-            <!-- Selected Item Display -->
-            <div id="selected-item-display" class="mb-4 bg-brand-gray-900 p-4 rounded-lg shadow-inner">
-                <!-- Selected item info will be injected here -->
+            <!-- Step 1: Username Input (NEW DESIGN based on image_de2327.png) -->
+            <div id="claim-step-1" class="w-full text-center">
+                <!-- Item Image and Name -->
+                <img id="claim-modal-image" src="https://placehold.co/128x128/111827/7ca1ff?text=Item" alt="Selected Item" class="w-32 h-32 object-contain mb-4 rounded-lg shadow-glow-green mx-auto">
+                <p class="text-lg text-gray-300 mb-4">You are claiming: 
+                    <strong id="claim-modal-item-name" class="text-brand-green">Item Name</strong>
+                </p>
+
+                <!-- Username Form -->
+                <form id="username-form" class="mb-4">
+                    <div class="mb-4">
+                        <label for="roblox-username" class="sr-only">Roblox Username</label> <!-- Screen-reader only label -->
+                        <input type="text" id="roblox-username" name="roblox-username" class="w-full px-4 py-3 bg-brand-gray-900 text-white border border-gray-700 rounded-lg shadow-sm text-center focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent" placeholder="Enter your Roblox username" required>
+                    </div>
+                    <button id="username-submit-btn" type="submit" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100" disabled>
+                        Continue
+                    </button>
+                </form>
+
+                <!-- NEW: Online Users (Urgency) -->
+                <div id="online-users" class="flex items-center justify-center p-2 bg-brand-gray-900/50 rounded-lg">
+                    <span class="relative flex h-3 w-3">
+                        <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-brand-green opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-green"></span>
+                    </span>
+                    <span id="online-users-text" class="ml-3 text-sm text-gray-300">173 users online</span>
+                </div>
             </div>
 
-            <form id="username-form">
-                <div class="mb-4">
-                    <label for="roblox-username" class="block text-sm font-medium text-gray-300 mb-2">Username</label>
-                    <input type="text" id="roblox-username" name="roblox-username" class="w-full px-4 py-3 bg-brand-gray-900 text-white border border-gray-700 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-transparent" placeholder="Enter your Roblox username" required>
-                </div>
-                <button id="username-submit-btn" type="submit" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:hover:scale-100" disabled>
-                    Continue
-                </button>
-            </form>
-        </div>
-    </div>
+            <!-- Step 2: Progress Bar & HACKER TERMINAL (NEW DESIGN) -->
+            <div id="claim-step-2" class="w-full hidden text-center">
+                <h2 class="text-2xl sm:text-3xl font-bold text-white mb-6">Processing Your Claim...</h2>
+                
+                <div class="w-full max-w-md mx-auto">
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-brand-gray-900 rounded-full h-6 mb-4 shadow-inner overflow-hidden">
+                        <div id="progress-bar" class="bg-brand-green h-6 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none transition-all duration-500 ease-out" style="width: 0%">
+                            <span id="progress-bar-text">0%</span>
+                        </div>
+                    </div>
+                    
+                    <!-- NEW: Hacker Terminal (replaces old p#progress-status) -->
+                    <div id="hacker-terminal" class="mb-6 text-left">
+                        <!-- Log lines will be injected here by JavaScript -->
+                    </div>
 
-    <!-- Progress Bar Modal -->
-    <div id="progress-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4 hidden transition-opacity duration-300">
-        <div class="bg-brand-gray-800 p-8 rounded-lg shadow-2xl w-full max-w-md mx-auto relative border border-gray-700 text-center">
-            <h2 class="text-2xl font-bold text-white mb-6">Processing Your Claim...</h2>
-            
-            <div class="w-full bg-brand-gray-900 rounded-full h-6 mb-4 shadow-inner overflow-hidden">
-                <div id="progress-bar" class="bg-brand-green h-6 rounded-full text-xs font-medium text-white text-center p-0.5 leading-none transition-all duration-500 ease-out" style="width: 0%">
-                    <span id="progress-bar-text">0%</span>
+                    <!-- Final Button -->
+                    <button id="final-continue-btn" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 hidden">
+                        Continue
+                    </button>
                 </div>
             </div>
-            
-            <p id="progress-status" class="text-gray-300 mb-6 h-6">Initializing...</p>
-
-            <button id="final-continue-btn" class="w-full bg-brand-green hover:bg-brand-green-hover text-white font-bold py-3 px-6 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-105 hidden">
-                Continue
-            </button>
         </div>
     </div>
     
@@ -254,11 +344,6 @@
 
     <!-- Main Application JavaScript -->
     <script type="module">
-        // TODO: Update the 'sound' property for each item.
-        // - Add the path to your sound file (e.g., "sounds/your-file.mp3").
-        // - Make sure you have uploaded these files to your 'sounds' folder on GitHub.
-        // - I have used your example for "Meowl".
-        // Data for the items (from your CSV)
         const items = [
             { "name": "Meowl", "type": "OG", "image": "https://i.ibb.co/mVChL7XL/Clear-background-clear-meowl-image.webp", "sound": "sounds/Meowlsound.mp3.mpeg" },
             { "name": "Strawberry Elephant", "type": "OG", "image": "https://i.ibb.co/1t9RSRDr/Strawberryelephant.webp", "sound": "sounds/Strawberry_Elephanta.mp3.mpeg" },
@@ -268,40 +353,113 @@
             { "name": "1x1x1x1", "type": "Secret", "image": "https://i.ibb.co/pBqBwtK5/1x1x1x1t.webp", "sound": "sounds/1⁴.mp3.mpeg" },
             { "name": "Guest 666", "type": "Secret", "image": "https://i.ibb.co/KpLxSTyM/Guest666t.webp", "sound": "sounds/Guest 666.mp3.mpeg" },
             { "name": "Horegini Boom", "type": "Secret", "image": "https://i.ibb.co/Pv6C3SPB/Hboom.webp", "sound": "sounds/HoreginiBoomsound.mp3.mpeg" }
-            // Add more items here (with 'sound' property)
+            // Add more items here
         ];
 
         // State
+        let combinedInterval = null; // NEW: Single interval for progress
+        let onlineUsersInterval = null; // For the online users counter
+        const preloadedSounds = {}; // Object to hold our preloaded <audio> elements
+        let currentSound = null; // To prevent sound overlap
         let selectedItem = null;
-        let progressInterval = null;
+
 
         // DOM Elements
         const itemGrid = document.getElementById('item-grid');
+        const soundboardGrid = document.getElementById('soundboard-grid');
+        const audioPreloader = document.getElementById('audio-preloader');
         
+        // Tutorial Modal
         const howItWorksBtn = document.getElementById('how-it-works-btn');
         const tutorialModal = document.getElementById('tutorial-modal');
         const closeTutorialBtn = document.getElementById('close-tutorial-btn');
         
-        const usernameModal = document.getElementById('username-modal');
-        const closeUsernameBtn = document.getElementById('close-username-btn');
-        const selectedItemDisplay = document.getElementById('selected-item-display');
+        // --- Claim Terminal Elements (Redesigned) ---
+        const claimTerminalModal = document.getElementById('claim-terminal-modal');
+        const closeClaimBtn = document.getElementById('close-claim-btn');
+        const claimStep1 = document.getElementById('claim-step-1');
+        const claimStep2 = document.getElementById('claim-step-2');
+        
+        // Step 1 Elements
+        const claimModalImage = document.getElementById('claim-modal-image');
+        const claimModalItemName = document.getElementById('claim-modal-item-name');
         const usernameForm = document.getElementById('username-form');
         const robloxUsernameInput = document.getElementById('roblox-username');
         const usernameSubmitBtn = document.getElementById('username-submit-btn');
-
-        const progressModal = document.getElementById('progress-modal');
+        const onlineUsersText = document.getElementById('online-users-text'); // NEW
+        
+        // Step 2 Elements
         const progressBar = document.getElementById('progress-bar');
         const progressBarText = document.getElementById('progress-bar-text');
-        const progressStatus = document.getElementById('progress-status');
+        const hackerTerminal = document.getElementById('hacker-terminal'); // NEW
         const finalContinueBtn = document.getElementById('final-continue-btn');
         
+        // Locker Fallback
         const lockerContainer = document.getElementById('locker-container');
 
         // Helper functions to show/hide modals
         const showModal = (modal) => modal.classList.remove('hidden');
-        const hideModal = (modal) => modal.classList.add('hidden');
+        
+        /**
+         * Updated hideModal to also stop all intervals for cleanup.
+         */
+        function hideModal(modal) {
+            modal.classList.add('hidden');
+            // When ANY modal closes, stop all background intervals
+            stopOnlineUserCounter();
+            if (combinedInterval) clearInterval(combinedInterval);
+        }
 
-        // Function to render item cards
+        // --- NEW: Online User Counter Functions ---
+        function startOnlineUserCounter() {
+            if (onlineUsersInterval) clearInterval(onlineUsersInterval); // Clear existing
+            
+            // Function to update the text
+            const updateCount = () => {
+                const count = Math.floor(Math.random() * (210 - 160 + 1)) + 160; // Random num 160-210
+                onlineUsersText.textContent = `${count} users online`;
+            };
+            
+            updateCount(); // Run immediately
+            onlineUsersInterval = setInterval(updateCount, 2500); // Update every 2.5s
+        }
+
+        function stopOnlineUserCounter() {
+            if (onlineUsersInterval) {
+                clearInterval(onlineUsersInterval);
+                onlineUsersInterval = null;
+            }
+        }
+
+        // --- Sound Functions (Preloading) ---
+        function preloadSounds() {
+            console.log('Preloading sounds...');
+            items.forEach(item => {
+                if (item.sound) {
+                    const audio = new Audio();
+                    audio.src = item.sound;
+                    audio.preload = 'auto';
+                    audioPreloader.appendChild(audio);
+                    preloadedSounds[item.sound] = audio;
+                }
+            });
+            console.log('Sounds preloaded:', preloadedSounds);
+        }
+
+        function playSound(soundPath) {
+            if (!soundPath || !preloadedSounds[soundPath]) {
+                console.warn(`Sound not found or not preloaded: ${soundPath}`);
+                return;
+            }
+            if (currentSound) {
+                currentSound.pause();
+                currentSound.currentTime = 0;
+            }
+            currentSound = preloadedSounds[soundPath];
+            currentSound.play().catch(error => console.warn("Audio play failed:", error.message));
+        }
+
+        // --- Render Functions ---
         function renderItems() {
             if (!itemGrid) return;
             itemGrid.innerHTML = items.map(item => `
@@ -318,96 +476,146 @@
                         data-item-name="${item.name}"
                         data-item-image="${item.image}"
                         data-item-sound="${item.sound || ''}"
+                        data-item-type="${item.type}"
                     >
                         Claim
                     </button>
                 </div>
             `).join('');
         }
+        
+        function renderSoundboard() {
+            if (!soundboardGrid) return;
+            soundboardGrid.innerHTML = items.map(item => {
+                if (!item.sound) return '';
+                return `
+                    <button 
+                        class="soundboard-btn p-2 rounded-lg text-xs font-semibold text-white truncate" 
+                        data-sound="${item.sound}"
+                        title="Play ${item.name} sound"
+                    >
+                        <i class="fas fa-play mr-1"></i>
+                        ${item.name}
+                    </button>
+                `;
+            }).join('');
+        }
 
-        // Function to open the username modal
-        function openUsernameModal(itemName, itemImage) {
-            selectedItem = { name: itemName, image: itemImage };
-            selectedItemDisplay.innerHTML = `
-                <img src="${itemImage}" alt="${itemName}" class="w-20 h-20 object-contain mx-auto mb-3" onerror="this.src='https://placehold.co/80x80/111827/7ca1ff?text=No+Img'; this.onerror=null;">
-                <p class="text-lg font-semibold text-white">You are claiming:</p>
-                <p class="text-xl font-bold text-brand-green">${itemName}</p>
-            `;
-            robloxUsernameInput.value = ''; // Clear input
-            usernameSubmitBtn.disabled = true; // Disable button
-            showModal(usernameModal);
+        // --- NEW MODAL FUNCTIONS (Redesigned) ---
+
+        /**
+         * Opens the new Claim Terminal modal to Step 1.
+         */
+        function openClaimModal(itemName, itemImage, itemType) {
+            selectedItem = { name: itemName, image: itemImage, type: itemType };
+            
+            // Populate Step 1 (new design)
+            claimModalImage.src = itemImage;
+            claimModalImage.alt = itemName;
+            claimModalItemName.textContent = itemName;
+            robloxUsernameInput.value = '';
+            usernameSubmitBtn.disabled = true;
+
+            // Reset modal to Step 1
+            claimStep1.classList.remove('hidden');
+            claimStep2.classList.add('hidden');
+            
+            // Start the online user counter
+            startOnlineUserCounter();
+            
+            showModal(claimTerminalModal);
             robloxUsernameInput.focus();
         }
 
-        // Function to start the progress bar simulation
+        /**
+         * NEW: Transitions from Step 1 to Step 2 (Hacker Terminal)
+         * This version uses a single, combined interval for logs and progress.
+         */
         function startProgress() {
-            hideModal(usernameModal);
-            showModal(progressModal);
+            // 1. Stop the user counter
+            stopOnlineUserCounter();
+            
+            // 2. Hide Step 1, Show Step 2
+            claimStep1.classList.add('hidden');
+            claimStep2.classList.remove('hidden');
 
-            // Reset progress bar
-            if (progressInterval) clearInterval(progressInterval);
-            let progress = 0;
+            // 3. Reset progress bar & terminal
+            if (combinedInterval) clearInterval(combinedInterval);
+            
             progressBar.style.width = '0%';
             progressBarText.textContent = '0%';
-            progressStatus.textContent = 'Initializing connection...';
+            hackerTerminal.innerHTML = ''; // Clear terminal
             finalContinueBtn.classList.add('hidden');
+            
+            const username = robloxUsernameInput.value;
+            const itemName = selectedItem.name.toLowerCase().replace(/ /g, '_');
 
-            const steps = [
-                { perc: 20, text: 'Connecting to Roblox servers...' },
-                { perc: 45, text: `Validating user: ${robloxUsernameInput.value}...` },
-                { perc: 65, text: 'Searching for item in database...' },
-                { perc: 80, text: 'Preparing item injection...' },
-                { perc: 95, text: 'Finalizing verification...' },
-                { perc: 100, text: 'Verification Complete!' }
+            // 4. Define log lines
+            const logLines = [
+                "[LOG] Initializing connection...",
+                "[LOG] Bypassing Roblox firewall (Layer 4)...",
+                `[LOG] Authenticating user: ${username}...`,
+                "[LOG] User validated. Searching database...",
+                `[LOG] Locating item_id: '${itemName}_${selectedItem.type.toLowerCase()}'...`,
+                "[LOG] Item found in 'brainrot_db'.",
+                "[LOG] Preparing item injection packet...",
+                `[LOG] Injecting item into account: ${username}...`,
+                "[LOG] Packet sent successfully.",
+                "[LOG] Success! Awaiting final user verification..."
             ];
+            
+            let lineIndex = 0;
 
-            let stepIndex = 0;
-
-            progressInterval = setInterval(() => {
-                // Increment progress by a small random amount
-                progress += Math.floor(Math.random() * 3) + 1;
-                
-                if (progress >= 100) {
-                    // Final step
-                    progress = 100;
-                    clearInterval(progressInterval);
-                    progressStatus.textContent = 'Verification Complete!';
-                    finalContinueBtn.classList.remove('hidden');
-                } else if (stepIndex < steps.length && progress >= steps[stepIndex].perc) {
-                    // Move to next status text
-                    progressStatus.textContent = steps[stepIndex].text;
-                    stepIndex++;
+            // 5. Start ONE combined interval
+            // This interval will run for each line + 1 (for the end)
+            const totalSteps = logLines.length;
+            const lineDelay = 700; // 700ms per line
+            
+            combinedInterval = setInterval(() => {
+                if (lineIndex < totalSteps) {
+                    // Add the next log line
+                    const p = document.createElement('p');
+                    p.textContent = logLines[lineIndex];
+                    hackerTerminal.appendChild(p);
+                    hackerTerminal.scrollTop = hackerTerminal.scrollHeight; // Auto-scroll
+                    
+                    // Update progress bar
+                    // We calculate progress based on which line we're on
+                    const progress = Math.min(100, Math.floor(((lineIndex + 1) / totalSteps) * 100));
+                    progressBar.style.width = `${progress}%`;
+                    progressBarText.textContent = `${progress}%`;
+                    
+                    lineIndex++;
+                } else {
+                    // All lines are printed, progress is 100%
+                    clearInterval(combinedInterval);
+                    finalContinueBtn.classList.remove('hidden'); // Show button
                 }
-                
-                progressBar.style.width = `${progress}%`;
-                progressBarText.textContent = `${progress}%`;
-
-            }, 100); // Update every 100ms
+            }, lineDelay); // "Type" one line at a time
         }
 
-        // Function to call the content locker
+        /**
+         * Closes the modal and calls the content locker.
+         */
         function callLocker() {
             console.log('Final continue clicked. Attempting to call content locker...');
-            hideModal(progressModal);
+            hideModal(claimTerminalModal); // This will also clear intervals
 
-            // This is the function call from your "image 3" hint
             if (typeof og_load === 'function') {
                 try {
                     og_load();
                 } catch (error) {
                     console.error("Error calling og_load():", error);
-                    // Fallback if the function fails
                     lockerContainer.innerHTML = '<div class="p-8 text-center text-red-500">Error loading verification. Please try again.</div>';
                     lockerContainer.classList.remove('hidden');
                 }
             } else {
                 console.warn('`og_load` function not found. Make sure your locker script is loaded correctly.');
-                // Fallback for testing
                 lockerContainer.innerHTML = `
                     <div class="h-full w-full flex items-center justify-center bg-gray-900 text-white p-8">
                         <div class="text-center">
                             <h3 class="text-2xl font-bold mb-4">Locker Would Load Here</h3>
-                            <p class="text-gray-400">The <code>og_load()</code> function was not found.<br>Please ensure your content locker script is added to the HTML <code>&lt;head&gt;</code>.</p>
+                            <p class="text-gray-400">The <code>og_load()</code> function was not found.<br>Please ensure your content locker script is added to the HTML Remember the current location is Agadir, Souss-Massa, Morocco.<code>&lt;head&gt;</code>.</p>
                         </div>
                     </div>`;
                 lockerContainer.classList.remove('hidden');
@@ -418,10 +626,9 @@
 
         // Run when the document is loaded
         document.addEventListener('DOMContentLoaded', () => {
-            renderItems();
-
-            // Get the hidden audio player
-            const itemSoundPlayer = document.getElementById('item-sound-player');
+            preloadSounds(); // Preload sounds *first*
+            renderItems(); // Then render the item grid
+            renderSoundboard(); // And render the soundboard
 
             // Event delegation for "Claim" buttons
             itemGrid.addEventListener('click', (e) => {
@@ -429,18 +636,23 @@
                 if (claimBtn) {
                     const itemName = claimBtn.dataset.itemName;
                     const itemImage = claimBtn.dataset.itemImage;
-                    const itemSound = claimBtn.dataset.itemSound; // Get the sound path
-
-                    // Play the sound if it exists
-                    if (itemSound && itemSoundPlayer) {
-                        itemSoundPlayer.src = itemSound;
-                        itemSoundPlayer.play().catch(error => {
-                            // Autoplay can be blocked. Log warning but continue.
-                            console.warn("Audio play failed (this is often expected):", error.message);
-                        });
-                    }
-
-                    openUsernameModal(itemName, itemImage);
+                    const itemSound = claimBtn.dataset.itemSound;
+                    const itemType = claimBtn.dataset.itemType; // Get the item type
+                    
+                    // Play the preloaded sound instantly
+                    playSound(itemSound);
+                    
+                    // Call the NEW modal function
+                    openClaimModal(itemName, itemImage, itemType); // Pass the type
+                }
+            });
+            
+            // Event delegation for Soundboard buttons
+            soundboardGrid.addEventListener('click', (e) => {
+                const soundBtn = e.target.closest('.soundboard-btn');
+                if (soundBtn) {
+                    // Play the preloaded sound
+                    playSound(soundBtn.dataset.sound);
                 }
             });
         });
@@ -449,12 +661,13 @@
         howItWorksBtn.addEventListener('click', () => showModal(tutorialModal));
         closeTutorialBtn.addEventListener('click', () => hideModal(tutorialModal));
 
-        // Username modal
-        closeUsernameBtn.addEventListener('click', () => hideModal(usernameModal));
+        // --- New Claim Terminal Listeners ---
+        closeClaimBtn.addEventListener('click', () => hideModal(claimTerminalModal));
+        
         usernameForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if (robloxUsernameInput.value.trim() !== '') {
-                startProgress();
+                startProgress(); // This now transitions the modal
             }
         });
         
@@ -467,7 +680,7 @@
         finalContinueBtn.addEventListener('click', callLocker);
 
         // Close modals by clicking on the background overlay
-        [tutorialModal, usernameModal].forEach(modal => {
+        [tutorialModal, claimTerminalModal].forEach(modal => {
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     hideModal(modal);
@@ -493,4 +706,3 @@
 
 </body>
 </html>
-
