@@ -31,10 +31,13 @@
                         'inter': ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'brand-green': '#10b981', // Emerald 500
+                        'brand-green-custom': '#24c131', /* Your custom green */
+                        'brand-red-custom': '#b70321',   /* Your custom red */
+                        'brand-black-custom': '#000000', /* Your custom black */
+                        'brand-green': '#10b981', // Emerald 500 (for progress bar, etc.)
                         'brand-green-hover': '#059669', // Emerald 600
                         'brand-gray': {
-                            800: '#1f2937', // Gray 800
+                            800: '#1f2937', // Gray 800 (for modals, etc.)
                             900: '#111827', // Gray 900
                         }
                     },
@@ -65,29 +68,68 @@
             cursor: not-allowed;
         }
 
-        /* New styles for the background image.
-         TODO: Replace the background-image URL with the URL for your background.JPG!
-        */
+        /* Ensure html is full height and body can grow */
+        html {
+            height: 100%;
+        }
+        
         body {
-            /* Using a placeholder image that fits the theme. Replace with your own URL. */
-            background-image: linear-gradient(rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.95)), url('https://i.ibb.co/r2cfmnQB/ll.jpg');
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            /* We use min-h-screen (in class) instead of height: 100% to allow scrolling */
+        }
+
+        /* Background for the whole page */
+        body {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.8)), url('https://i.ibb.co/r2cfmnQB/ll.jpg'); /* Placeholder image */
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
+        
+        /* Helper for grid pattern overlay */
+        .grid-pattern-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 8px 8px; /* Size of the small squares */
+            z-index: 0; /* Behind content */
+        }
+
+        /* Apply specific background colors to new containers */
+        #green-header-container {
+            background-color: #24c131; /* Your custom green */
+            position: relative;
+            overflow: hidden; /* Contain the pattern */
+        }
+        #red-items-container {
+            background-color: #b70321; /* Your custom red */
+            position: relative;
+            overflow: hidden; /* Contain the pattern */
+        }
+        .item-card-background {
+            background-color: #000000; /* Your custom black for item cards */
+        }
+        
+        /* Ensure content is above the grid pattern */
+        .content-above-pattern {
+            position: relative;
+            z-index: 10;
+        }
     </style>
 </head>
-<body class="text-gray-200 font-inter h-full antialiased">
+<body class="text-gray-200 font-inter antialiased flex flex-col min-h-screen">
 
-    <!-- Main Application Container -->
-    <div id="app-container" class="relative min-h-screen overflow-x-hidden p-4 md:p-8">
-        
-        <!-- Header Section -->
-        <header class="container mx-auto max-w-6xl px-4 py-8 text-center">
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-3">
+    <!-- Green Header Container -->
+    <div id="green-header-container" class="w-full flex-shrink-0 grid-pattern-overlay">
+        <header class="container mx-auto max-w-6xl px-4 py-8 text-center text-white content-above-pattern">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-3">
                 Steal a Brainrot
             </h1>
-            <p class="text-lg md:text-2xl font-bold text-brand-green mb-6 animate-pulse-slow">
+            <p class="text-lg md:text-2xl font-bold mb-6 animate-pulse-slow">
                 Claim items in just 20 sec!
             </p>
             
@@ -100,36 +142,34 @@
                 </button>
                 
                 <!-- Share Buttons -->
-                <div class="flex items-center justify-center gap-3 sm:gap-4 p-3 bg-brand-gray-800 rounded-lg shadow-inner">
-                    <span class="text-sm font-medium text-gray-400 hidden sm:block">Share:</span>
-                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-blue-500 transition-colors" aria-label="Share on Facebook">
+                <div class="flex items-center justify-center gap-3 sm:gap-4 p-3 bg-black bg-opacity-30 rounded-lg shadow-inner">
+                    <span class="text-sm font-medium text-gray-200 hidden sm:block">Share:</span>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-200 hover:text-blue-500 transition-colors" aria-label="Share on Facebook">
                         <i class="fab fa-facebook-square"></i>
                     </a>
-                    <a href="https://api.whatsapp.com/send?text=Check%20this%20out!%20https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-green-500 transition-colors" aria-label="Share on WhatsApp">
+                    <a href="https://api.whatsapp.com/send?text=Check%20this%20out!%20https://stealabrainrotroblox.vercel.app" target="_blank" class="text-3xl md:text-2xl text-gray-200 hover:text-green-500 transition-colors" aria-label="Share on WhatsApp">
                         <i class="fab fa-whatsapp-square"></i>
                     </a>
-                    <a href="https://t.me/share/url?url=https://stealabrainrotroblox.vercel.app&text=Check%20this%20out!" target="_blank" class="text-3xl md:text-2xl text-gray-400 hover:text-blue-400 transition-colors" aria-label="Share on Telegram">
+                    <a href="https://t.me/share/url?url=https://stealabrainrotroblox.vercel.app&text=Check%20this%20out!" target="_blank" class="text-3xl md:text-2xl text-gray-200 hover:text-blue-400 transition-colors" aria-label="Share on Telegram">
                         <i class="fab fa-telegram"></i>
                     </a>
                 </div>
             </div>
         </header>
-
-        <!-- Items Grid Section -->
-        <main class="container mx-auto max-w-6xl px-4 py-8">
-            <div id="item-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
-                <!-- Item cards will be injected here by JavaScript -->
-                <!-- Item cards will be injected here by JavaScript -->
-            </div>
-        </main>
-
-        <!-- Footer -->
-        <footer class="container mx-auto max-w-6xl px-4 py-6 text-center text-gray-300 text-sm"> <!-- Updated text color for better readability -->
-            <p>&copy; 2025 stealabrainrotroblox.vercel.app. All rights reserved.</p>
-            <p class="text-xs mt-1 text-gray-400">This website is not affiliated with Roblox Corporation.</p>
-        </footer>
-
     </div>
+
+    <!-- Red Items Container -->
+    <main id="red-items-container" class="flex-grow w-full py-8 grid-pattern-overlay">
+        <div id="item-grid" class="container mx-auto max-w-6xl px-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 content-above-pattern">
+            <!-- Item cards will be injected here by JavaScript -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full flex-shrink-0 bg-black bg-opacity-50 py-6 text-center text-gray-300 text-sm">
+        <p>&copy; 2025 stealabrainrotroblox.vercel.app. All rights reserved.</p>
+        <p class="text-xs mt-1 text-gray-400">This website is not affiliated with Roblox Corporation.</p>
+    </footer>
 
     <!-- Audio Player (Hidden) -->
     <audio id="item-sound-player" src=""></audio>
@@ -225,7 +265,7 @@
             { "name": "Bisonte Giuppitere", "type": "Secret", "image": "https://i.ibb.co/Kp6NBfjm/Bisonte-Giuppitere-normal.webp", "sound": "sounds/Bisontegiupitere.mp3.mpeg" },
             { "name": "La Vacca Saturno Saturnita", "type": "Secret", "image": "https://i.ibb.co/TxfLByZ7/La-Vaccca-Saturno-Saturnita.webp", "sound": "sounds/Lavacasaturnosaturnita.mp3.mpeg" },
             { "name": "1x1x1x1", "type": "Secret", "image": "https://i.ibb.co/pBqBwtK5/1x1x1x1t.webp", "sound": "sounds/1⁴.mp3.mpeg" },
-            { "name": "Guest 666", "type": "Secret", "image": "https://i.ibb.co/KpLxSTyM/Guest666t.webp", "sound": "sounds/" },
+            { "name": "Guest 666", "type": "Secret", "image": "https://i.ibb.co/KpLxSTyM/Guest666t.webp", "sound": "sounds/Guest 666.mp3.mpeg" },
             { "name": "Horegini Boom", "type": "Secret", "image": "https://i.ibb.co/Pv6C3SPB/Hboom.webp", "sound": "sounds/HoreginiBoomsound.mp3.mpeg" }
             // Add more items here (with 'sound' property)
         ];
@@ -264,7 +304,7 @@
         function renderItems() {
             if (!itemGrid) return;
             itemGrid.innerHTML = items.map(item => `
-                <div class="bg-brand-gray-800 rounded-lg p-4 flex flex-col items-center text-center shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border border-gray-700/50">
+                <div class="item-card-background rounded-lg p-4 flex flex-col items-center text-center shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl border border-gray-700/50">
                     <img src="${item.image}" alt="${item.name}" 
                          class="w-24 h-24 md:w-32 md:h-32 object-contain mb-4" 
                          onerror="this.src='https://placehold.co/128x128/1f2937/7ca1ff?text=No+Img'; this.onerror=null;">
@@ -442,14 +482,13 @@
     </script>
     <script src="/_vercel/insights/script.js" defer></script>
     <!-- End Vercel Analytics -->
-	
-	<!-- Vercel speed -->
-	<script>
+
+    <!-- Vercel Speed Insights -->
+    <script>
       window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
     </script>
-    <script defer src="/_vercel/speed-insights/script.js"></script>
-    <!-- End Vercel speed -->
-	
+    <script src="/_vercel/speed-insights/script.js"></script>
+    <!-- End Vercel Speed Insights -->
+
 </body>
 </html>
-
